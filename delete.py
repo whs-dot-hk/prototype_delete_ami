@@ -8,12 +8,13 @@ def delete_all_tail(name):
         Filters=[{"Name": "name", "Values": [name]}], Owners=["self"]
     )
 
-    def get_snapshot_id(image):
-        [d["Ebs"]["SnapshotId"] for d in image.block_device_mappings if "Ebs" in d][0]
-
     for image in tail:
+        get_snapshot_id = lambda: [
+            d["Ebs"]["SnapshotId"] for d in image.block_device_mappings if "Ebs" in d
+        ][0]
+
         image_name = image.name
-        snapshot_id = get_snapshot_id(image)
+        snapshot_id = get_snapshot_id()
 
         image.deregister()
         print(image_name + " deregistered")
